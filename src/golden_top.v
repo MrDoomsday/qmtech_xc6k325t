@@ -137,11 +137,12 @@ module golden_top(
 
 );
 
-/*
+
 reg [9:0] reset_counter;
 reg soft_reset_n;
 wire init_calib_complete;
 wire mmcm_locked;
+wire clk_50;
 
 //instance block design
 top_bd_wrapper top_bd_wrapper_inst (    
@@ -163,12 +164,13 @@ top_bd_wrapper top_bd_wrapper_inst (
 	.ext_reset_n		(soft_reset_n),
     .init_calib_complete(init_calib_complete),
     .mmcm_locked		(mmcm_locked),
-    .sys_clk			(sys_clk)
+    .sys_clk			(sys_clk),
+    .clk_50_o           (clk_50)
 );
 // (* mark_debug = "TRUE" *)
 
 	//reset logic 
-	always @ (posedge sys_clk or negedge sys_rst_n) begin
+	always @ (posedge clk_50 or negedge sys_rst_n) begin
 		if(!sys_rst_n) begin
 			reset_counter <= 10'h0;
 			soft_reset_n <= 1'b0;
@@ -188,7 +190,7 @@ top_bd_wrapper top_bd_wrapper_inst (
 	// pinout blink
 	(* mark_debug = "TRUE" *) reg [31:0] gp_counter;
 
-	always @(posedge sys_clk or negedge soft_reset_n) begin
+	always @(posedge clk_50 or negedge soft_reset_n) begin
 		if(!soft_reset_n) gp_counter <= 32'h0;
 		else gp_counter <= gp_counter + 32'h1;
 	end
@@ -217,7 +219,7 @@ top_bd_wrapper top_bd_wrapper_inst (
 	// lfsr
 	(* mark_debug = "TRUE" *) reg [7:0] lfsr;
 
-	always @(posedge sys_clk or negedge soft_reset_n) begin
+	always @(posedge clk_50 or negedge soft_reset_n) begin
 		if(!soft_reset_n) begin
 			lfsr <= 8'h1;
 		end else if(gp_counter[29]) begin
@@ -236,5 +238,5 @@ top_bd_wrapper top_bd_wrapper_inst (
 
 	assign GPIO_U4_50 = gp_counter[29] ? lfsr[0] : 1'b0;
 	assign GPIO_U4_54 = gp_counter[29] ? lfsr[3] : 1'b0;
-*/
+
 endmodule

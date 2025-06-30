@@ -370,6 +370,9 @@ proc create_hier_cell_subsystem_ddr3 { parentCell nameHier } {
 
   # Create instance: gnd, and set properties
   set gnd [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconstant:1.1 gnd ]
+  set_property -dict [ list \
+   CONFIG.CONST_VAL {0} \
+ ] $gnd
 
   # Create instance: mig_7series_0, and set properties
   set mig_7series_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:mig_7series:4.2 mig_7series_0 ]
@@ -450,6 +453,7 @@ proc create_root_design { parentCell } {
 
 
   # Create ports
+  set clk_50_o [ create_bd_port -dir O -type clk clk_50_o ]
   set ext_reset_n [ create_bd_port -dir I -type rst ext_reset_n ]
   set init_calib_complete [ create_bd_port -dir O init_calib_complete ]
   set mmcm_locked [ create_bd_port -dir O mmcm_locked ]
@@ -533,7 +537,7 @@ proc create_root_design { parentCell } {
 
   # Create port connections
   connect_bd_net -net aux_rst_dout [get_bd_pins aux_rst/dout] [get_bd_pins proc_sys_reset_0/aux_reset_in]
-  connect_bd_net -net clk_wiz_0_clk_50 [get_bd_pins axi_dwidth_converter_0/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_50] [get_bd_pins jtag_axi_0/aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins subsystem_ddr3/user_clk]
+  connect_bd_net -net clk_wiz_0_clk_50 [get_bd_ports clk_50_o] [get_bd_pins axi_dwidth_converter_0/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_50] [get_bd_pins jtag_axi_0/aclk] [get_bd_pins proc_sys_reset_0/slowest_sync_clk] [get_bd_pins subsystem_ddr3/user_clk]
   connect_bd_net -net clk_wiz_0_clk_200 [get_bd_pins clk_wiz_0/clk_200] [get_bd_pins subsystem_ddr3/sys_clk_i]
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins proc_sys_reset_0/dcm_locked]
   connect_bd_net -net ext_reset_n_1 [get_bd_ports ext_reset_n] [get_bd_pins proc_sys_reset_0/ext_reset_in]
