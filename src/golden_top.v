@@ -112,10 +112,10 @@ module golden_top(
 	output GPIO_U5_54,
 	output GPIO_U5_55,
 	output GPIO_U5_56,
-	output GPIO_U5_57,
+	input GPIO_U5_57,
 	output GPIO_U5_58,
-	output GPIO_U5_59,
-	output GPIO_U5_60,
+	inout GPIO_U5_59,
+	inout GPIO_U5_60,
 
 // DDR3
 // Inouts
@@ -165,7 +165,13 @@ top_bd_wrapper top_bd_wrapper_inst (
     .init_calib_complete(init_calib_complete),
     .mmcm_locked		(mmcm_locked),
     .sys_clk			(sys_clk),
-    .clk_50_o           (clk_50)
+    .clk_50_o           (clk_50),
+    
+    .iic_main_scl_io(GPIO_U5_59),
+    .iic_main_sda_io(GPIO_U5_60),
+    
+    .rs232_uart_rxd(GPIO_U5_57),
+    .rs232_uart_txd(GPIO_U5_58)
 );
 // (* mark_debug = "TRUE" *)
 

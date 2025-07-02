@@ -235,3 +235,4 @@ set_property PACKAGE_PIN M26 [get_ports GPIO_U4_60]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 
 
+
