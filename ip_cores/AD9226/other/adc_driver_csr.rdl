@@ -1,0 +1,60 @@
+addrmap adc_driver_csr {
+    reg reg_adc_control {
+        name = "Control";
+        desc = "Регистр управления";
+        field {
+            name = "Enable";
+            desc = "Включение выдачи данных";
+            sw = rw;
+            hw = r;
+        } enable[0:0] = 0;
+    };
+
+    reg reg_adc_counter_overflow {
+        name = "ADC Counter overflow";
+        desc = "Регистр, который определяет количество переполнений разрядной сетки АЦП.
+                Может быть программным (при превышении заданного числа) или
+                аппаратным (превышение максимально допустимого входного напряжения для оцифровки)";
+        field {
+            name = "Amount overflow";
+            desc = "Количество переполнений";
+            sw = r;
+            hw = w;
+        } amount_overflow[31:0] = 0;
+    };
+
+    reg reg_adc_drop_word {
+        name = "Ignore word";
+        desc = "Количество отброшенных слов в результате перегрузки axis-интерфейса (когда
+                приемные каскады не успевают обработать поступающий трафик)";
+        field {
+            name = "Amount";
+            desc = "Количество";
+            sw = r;
+            hw = w;
+        } amount[31:0] = 0;
+    };
+
+    reg reg_adc_minampl {
+        name = "Minimal amplitude";
+        desc = "Минимальная амплитуда, при которой формируется программный сигнал OTR.
+                Результирующий сигнал накладывается на аппаратный OTR и выдается из модуля.";
+        field {
+            name = "Значение";
+            desc = "Беззнаковое число, диапазон: [0-1023]";
+            sw = rw;
+            hw = r;
+        } minampl[11:0] = 0;
+    };
+
+
+    default regwidth = 32;
+    default sw=rw;
+    default hw=r;
+    littleendian;
+
+    reg_adc_control adc_control;
+    reg_adc_minampl adc_minampl;
+    reg_adc_counter_overflow adc_counter_overflow;
+    reg_adc_drop_word adc_drop_word;
+};
