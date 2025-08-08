@@ -195,7 +195,8 @@ module driver_ad9226 (
 	assign cnt_drop_impl = ~m_adc_dcfifo_ready & m_adc_dcfifo_full;
 
 // AXIS4-Stream
-	assign m_axis_data_o = {{4{m_adc_dcfifo_data[11]}}, m_adc_dcfifo_data[11:0]};
+	wire signed [11:0] m_axis_data_next = $signed(m_adc_dcfifo_data[11:0]) - $signed(12'd2048);
+	assign m_axis_data_o = {{4{m_axis_data_next[11]}}, m_axis_data_next[11:0]};
 	assign m_axis_valid_o = m_adc_dcfifo_valid;
 	assign adc_otr_o = m_adc_dcfifo_data[12] | soft_otr;
 
