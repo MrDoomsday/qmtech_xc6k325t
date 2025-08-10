@@ -47,19 +47,19 @@ module golden_top(
 	output GPIO_U4_44,
 	output GPIO_U4_45,
 	output GPIO_U4_46,
-	output GPIO_U4_47,
-	output GPIO_U4_48,
-	output GPIO_U4_49,
-	output GPIO_U4_50,
-	output GPIO_U4_51,
-	output GPIO_U4_52,
-	output GPIO_U4_53,
-	output GPIO_U4_54,
-	output GPIO_U4_55,
-	output GPIO_U4_56,
-	output GPIO_U4_57,
-	output GPIO_U4_58,
-	output GPIO_U4_59,
+	input GPIO_U4_47,
+	input GPIO_U4_48,
+	input GPIO_U4_49,
+	input GPIO_U4_50,
+	input GPIO_U4_51,
+	input GPIO_U4_52,
+	input GPIO_U4_53,
+	input GPIO_U4_54,
+	input GPIO_U4_55,
+	input GPIO_U4_56,
+	input GPIO_U4_57,
+	input GPIO_U4_58,
+	input GPIO_U4_59,
 	output GPIO_U4_60,
 //GPIO U5
 	output GPIO_U5_7,
@@ -144,6 +144,15 @@ wire init_calib_complete;
 wire mmcm_locked;
 wire clk_50;
 
+wire [11:0] adc_data;
+wire adc_clk;
+wire adc_otr;
+
+// temp wires
+wire [15:0] axis_data;
+wire axis_tvalid;
+wire axis_otr;
+
 //instance block design
 top_bd_wrapper top_bd_wrapper_inst (    
 	.ddr3_addr			(ddr3_addr),
@@ -167,11 +176,16 @@ top_bd_wrapper top_bd_wrapper_inst (
     .sys_clk			(sys_clk),
     .clk_50_o           (clk_50),
     
-    .iic_main_scl_io(GPIO_U5_59),
-    .iic_main_sda_io(GPIO_U5_60),
+    .adc_clk_o  (adc_clk),
+    .adc_data_i (adc_data),
+    .adc_otr_i  (adc_otr),
     
-    .rs232_uart_rxd(GPIO_U5_57),
-    .rs232_uart_txd(GPIO_U5_58)
+    
+    .adc_otr_o          (axis_otr),
+    .m_axis_0_tdata     (axis_data),
+    .m_axis_0_tready    (1'b1),
+    .m_axis_0_tvalid    (axis_tvalid)
+    
 );
 // (* mark_debug = "TRUE" *)
 
@@ -193,7 +207,7 @@ top_bd_wrapper top_bd_wrapper_inst (
 
 
 
-	// pinout blink
+// pinout blink
 	(* mark_debug = "TRUE" *) reg [31:0] gp_counter;
 
 	always @(posedge clk_50 or negedge soft_reset_n) begin
@@ -201,48 +215,30 @@ top_bd_wrapper top_bd_wrapper_inst (
 		else gp_counter <= gp_counter + 32'h1;
 	end
 
+	assign led_1 = init_calib_complete & mmcm_locked? gp_counter[23] : 1'b1;
+	assign led_2 = ^{axis_otr, axis_data, axis_tvalid};
 
-	assign GPIO_U4_14 = gp_counter[0];
-	assign GPIO_U4_8 = gp_counter[1];
-	assign GPIO_U4_10 = gp_counter[2];
-	assign GPIO_U4_18 = gp_counter[3];
-	assign GPIO_U4_7 = gp_counter[4];
-	assign GPIO_U4_13 = gp_counter[5];
-	assign GPIO_U4_17 = gp_counter[6];
-	assign GPIO_U4_19 = gp_counter[7];
-	assign GPIO_U4_16 = gp_counter[8];
-	assign GPIO_U4_11 = gp_counter[9];
-	assign GPIO_U4_9 = gp_counter[10];
-	assign GPIO_U4_15 = gp_counter[11];
-	assign GPIO_U4_20 = gp_counter[12];
-	assign GPIO_U4_21 = gp_counter[13];
-	assign GPIO_U4_12 = gp_counter[14];
-	assign GPIO_U4_36 = gp_counter[15];
+// assign ADC
+    assign GPIO_U4_60 = adc_clk;
 
-	assign led_1 = init_calib_complete ? gp_counter[23] : 1'b1;
-	assign led_2 = mmcm_locked ? gp_counter[25] : 1'b1;
-
-	// lfsr
-	(* mark_debug = "TRUE" *) reg [7:0] lfsr;
-
-	always @(posedge clk_50 or negedge soft_reset_n) begin
-		if(!soft_reset_n) begin
-			lfsr <= 8'h1;
-		end else if(gp_counter[29]) begin
-			if(gp_counter[15:0] == 16'b1000_0000_0000_0000 && (gp_counter[28:16] > 0) && (gp_counter[28:16] < 13'b0_0001_0000_0000)) begin
-				lfsr[0] <= lfsr[1];
-				lfsr[1] <= lfsr[2];
-				lfsr[2] <= lfsr[3];
-				lfsr[3] <= lfsr[4] ^ lfsr[0];
-				lfsr[4] <= lfsr[5] ^ lfsr[0];
-				lfsr[5] <= lfsr[6] ^ lfsr[0];
-				lfsr[6] <= lfsr[7];
-				lfsr[7] <= lfsr[0];
-			end
-		end
-	end
-
-	assign GPIO_U4_50 = gp_counter[29] ? lfsr[0] : 1'b0;
-	assign GPIO_U4_54 = gp_counter[29] ? lfsr[3] : 1'b0;
-
+    assign {adc_otr, adc_data} = {  GPIO_U4_47,
+                                    GPIO_U4_48,
+                                    GPIO_U4_49,
+                                    GPIO_U4_50,
+                                    GPIO_U4_51,
+                                    GPIO_U4_52,
+                                    GPIO_U4_53,
+                                    GPIO_U4_54,
+                                    GPIO_U4_55,
+                                    GPIO_U4_56,
+                                    GPIO_U4_57,
+                                    GPIO_U4_58,
+                                    GPIO_U4_59
+                                 };
+                                    
+	assign GPIO_U4_43 = 1'bZ;
+	assign GPIO_U4_44 = 1'bZ;
+	assign GPIO_U4_45 = 1'bZ;
+	assign GPIO_U4_46 = 1'bZ;
+	
 endmodule
