@@ -734,7 +734,6 @@ proc create_root_design { parentCell } {
 
   # Create interface connections
   connect_bd_intf_net -intf_net ADC_m_axis_0 [get_bd_intf_ports m_axis_0] [get_bd_intf_pins ADC/m_axis]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_intf_nets ADC_m_axis_0]
   connect_bd_intf_net -intf_net S00_AXI_1 [get_bd_intf_pins axi_dwidth_converter_0/M_AXI] [get_bd_intf_pins ddr_axi_interconnect/S00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins ddr_axi_interconnect/M00_AXI] [get_bd_intf_pins subsystem_ddr3/S_AXI]
   connect_bd_intf_net -intf_net ddr_axi_interconnect_M01_AXI [get_bd_intf_pins ADC/S_AXI] [get_bd_intf_pins ddr_axi_interconnect/M01_AXI]
@@ -743,19 +742,15 @@ proc create_root_design { parentCell } {
 
   # Create port connections
   connect_bd_net -net ADC_adc_otr_o_0 [get_bd_ports adc_otr_o] [get_bd_pins ADC/adc_otr_o]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets ADC_adc_otr_o_0]
   connect_bd_net -net ADC_clk_out1_0 [get_bd_ports adc_clk_o] [get_bd_pins ADC/adc_clk_o]
   connect_bd_net -net adc_data_i_0_1 [get_bd_ports adc_data_i] [get_bd_pins ADC/adc_data_i]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets adc_data_i_0_1]
   connect_bd_net -net adc_otr_i_0_1 [get_bd_ports adc_otr_i] [get_bd_pins ADC/adc_otr_i]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets adc_otr_i_0_1]
   connect_bd_net -net clk_wiz_0_clk_50 [get_bd_ports clk_50_o] [get_bd_pins ADC/axi_clk] [get_bd_pins axi_dwidth_converter_0/s_axi_aclk] [get_bd_pins clk_wiz_0/clk_50] [get_bd_pins ddr_axi_interconnect/M01_ACLK] [get_bd_pins ddr_axi_interconnect/S00_ACLK] [get_bd_pins jtag_axi_0/aclk] [get_bd_pins reset_subsystem/clk_50]
   connect_bd_net -net clk_wiz_0_clk_100 [get_bd_pins ADC/axis_clk] [get_bd_pins clk_wiz_0/clk_100] [get_bd_pins ddr_axi_interconnect/ACLK] [get_bd_pins ddr_axi_interconnect/M00_ACLK] [get_bd_pins reset_subsystem/clk_100] [get_bd_pins subsystem_ddr3/user_clk]
   connect_bd_net -net clk_wiz_0_clk_200 [get_bd_pins clk_wiz_0/clk_200] [get_bd_pins subsystem_ddr3/sys_clk_i]
   connect_bd_net -net clk_wiz_0_locked [get_bd_pins clk_wiz_0/locked] [get_bd_pins reset_subsystem/dcm_locked]
   connect_bd_net -net clkwiz_refclk_1 [get_bd_pins ADC/clkwiz_refclk] [get_bd_pins clk_wiz_0/adc_refclk]
   connect_bd_net -net ext_reset_n_1 [get_bd_ports ext_reset_n] [get_bd_pins reset_subsystem/ext_reset_n]
-  set_property HDL_ATTRIBUTE.DEBUG {true} [get_bd_nets ext_reset_n_1]
   connect_bd_net -net mig_7series_0_init_calib_complete [get_bd_ports init_calib_complete] [get_bd_pins subsystem_ddr3/init_calib_complete]
   connect_bd_net -net mig_7series_0_mmcm_locked [get_bd_ports mmcm_locked] [get_bd_pins subsystem_ddr3/mmcm_locked]
   connect_bd_net -net proc_sys_reset_0_peripheral_aresetn [get_bd_pins ADC/axi_reset_n] [get_bd_pins axi_dwidth_converter_0/s_axi_aresetn] [get_bd_pins ddr_axi_interconnect/ARESETN] [get_bd_pins ddr_axi_interconnect/M00_ARESETN] [get_bd_pins ddr_axi_interconnect/M01_ARESETN] [get_bd_pins ddr_axi_interconnect/S00_ARESETN] [get_bd_pins jtag_axi_0/aresetn] [get_bd_pins reset_subsystem/aresetn_50M] [get_bd_pins subsystem_ddr3/user_reset_n]
