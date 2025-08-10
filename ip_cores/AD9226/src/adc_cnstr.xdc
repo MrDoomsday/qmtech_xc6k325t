@@ -1,10 +1,12 @@
 # adc top module
 set_property ASYNC_REG TRUE [get_cells -hier *adc_reset_sync_reg*]
 set_false_path -from [get_cells -hier *adc_reset_sync_reg[3]*]
+set_false_path -to [get_cells -hier *adc_reset_sync_reg*]
 
 # reset
 set_property ASYNC_REG TRUE [get_cells -hier *sync_reset_n_reg*]
 set_false_path -from [get_cells -hier *sync_reset_n_reg[3]*]
+set_false_path -to [get_cells -hier *sync_reset_n_reg*]
 
 # loop pulse
 set_property ASYNC_REG TRUE [get_cells -hier *m_pulse_req_sync_reg*]
