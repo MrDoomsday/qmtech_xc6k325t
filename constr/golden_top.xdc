@@ -236,3 +236,5 @@ set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
 
 
 
+
+set_false_path -from [get_pins {top_bd_wrapper_inst/top_bd_i/ADC/driver_ad9226_0/inst/adc_driver_csr_inst/field_storage_reg[adc_control][enable][value]/C}] -to [get_pins {top_bd_wrapper_inst/top_bd_i/ADC/adc_ce_buffer/U0/USE_BUFGCE.GEN_BUFGCE[0].BUFGCE_U/CE0}]
